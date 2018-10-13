@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Mongo Scrapper</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active float-right" href="/">Home <span class="sr-only">(current)</span></a>
+            {{!-- <a class="btn btn-primary btn-lg" href="/clearall" role="button">Clear Jobs</a> --}}
+        </div>
+    </div>
+</nav>
+<div class="jumbotron overlay">
+    <h1 class="display-4">Job Scraper!</h1>
+    <p class="lead">Find the most current jobs available!</p>
+    <hr class="my-4">
+    <a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape Articles</a>
+ 
+
+</div>
+<!-- Create aq new card for each record scraped -->
+<div id="articles"></div>
+ <div id="notes"></div>

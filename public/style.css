@@ -1,0 +1,55 @@
+body {
+    background-image: url('./images/paper.jpg');
+    background-repeat: no-repeat center center fixed; 
+    -webkit-background-size: cover; 
+    -moz-background-size: cover; 
+    -o-background-size: cover; 
+    background-size: cover; 
+  }
+
+  .jumbotron {
+    background-image: url('./images/cafe2.jpg');
+    background-repeat: no-repeat center center fixed; 
+    -webkit-background-size: cover; 
+    -moz-background-size: cover; 
+    -o-background-size: cover; 
+    background-size: cover; 
+
+    height: 500px;
+    
+  }  
+  
+
+
+  #wrapper {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5%;
+}
+
+
+#articles {
+  display: inline-block;
+  overflow: auto;
+  
+  height: 700px;
+  margin-top: 50px;
+}
+#notes {
+  float: right;
+  width: 30%;
+}
+textarea, input {
+  display: block;
+  width: 100%;
+  background-color: #FCF5C7;
+}
+input {
+  height: 36px;
+  font-size: 24px;
+}
+textarea {
+  height: 200px;
+  font-size: 18px;
+}
