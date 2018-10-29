@@ -46,50 +46,59 @@ app.get("/", function (req, res) {
 
 // A GET route for scraping the  website
 app.get("/scrape", function (req, res) {
+  console.log("entering get scrape");
+  var articleArr = [];
   //Scrape cybercoders for Jobs
-  axios.get("https://www.cybercoders.com/search/?searchterms=&searchlocation=27713&newsearch=true&originalsearch=true&sorttype=").then(function (response) {
-     // Then, we load that into cheerio and save it to $ for a shorthand selector
-    var $ = cheerio.load(response.data);
+  axios.get("https://www.cybercoders.com/search/?searchterms=&searchlocation=27713&newsearch=true&originalsearch=true&sorttype=")
+    .then(function (response) {
+      // Then, we load that into cheerio and save it to $ for a shorthand selector
+      var $ = cheerio.load(response.data);
+      // Now, we grab every h3 within an article tag, and do the following:
+      $("div.job-details-container").each(function (i, element) {
 
-    // Now, we grab every h3 within an article tag, and do the following:
-    $("div.job-details-container").each(function (i, element) {
-      // Save an empty result object
-      var result = {};
+        // Save an empty result object
+        var result = {};
 
-      // Add fields to result object
-      result.title = $(this)
-        .find("div.job-title")
-        .text()
-        .trim();
+        // Add fields to result object
+        result.title = $(this)
+          .find("div.job-title")
+          .text()
+          .trim();
 
-      result.link = $(this)
-        .find("a")
-        .attr("href");
-    
+        result.link = $(this)
+          .find("a")
+          .attr("href");
+
         result.summary = $(this)
-        .find("div.description")
-        .text()
-        .trim();
+          .find("div.description")
+          .text()
+          .trim();
+        // console.log("the result in scrape")
+        // console.log(result);
+        articleArr.push(result);
+      });
 
-      console.log(result);
-
-      // add each scrap to document in the collection
-      db.Article.create(result)
+      // add each scrape to document in the collection
+      db.Article.create(articleArr)
         .then(function (dbArticle) {
           // View the added result in the console
           // Send JSon of client side
-          console.log(dbArticle);
+          console.log("you are using the result being sent to client side")
+          console.log("87 " + dbArticle);
           res.json(dbArticle);
+          // })
+
         })
         .catch(function (err) {
           // If an error occurred, send it to the client
-          return res.json(err);
+          console.log("this is the error logic" + err);
+
+
+
         });
 
     });
-  });
-});
-
+})
 // Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
   // Grab every document in the Articles collection
@@ -121,49 +130,49 @@ app.get("/articles/:id", function (req, res) {
     });
 });
 
-// Route for saving/updating an Article's associated Note
+// // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {
-  // Create a new note and pass the req.body to the entry
+//   // Create a new note and pass the req.body to the entry
   db.Note.create(req.body)
     .then(function (dbNote) {
-      // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+//       // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+//       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+//       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id } }, { new: true });
     })
     .then(function (dbArticle) {
-      // If we were able to successfully update an Article, send it back to the client
+//       // If we were able to successfully update an Article, send it back to the client
       res.json(dbArticle);
     })
     .catch(function (err) {
-      // If an error occurred, send it to the client
+//       // If an error occurred, send it to the client
       res.json(err);
     });
 });
 
-app.delete("/notes/:id", function (req, res) {
+// app.delete("/notes/:id", function (req, res) {
 
-  db.Note.findByIdAndDelete(req.params.id)
-    .then(function () {
-      res.json({});
-    })
-    .catch(function (err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
+//   db.Note.findByIdAndDelete(req.params.id)
+//     .then(function () {
+//       res.json({});
+//     })
+//     .catch(function (err) {
+//       // If an error occurred, send it to the client
+//       res.json(err);
+//     });
+// });
 
-app.delete("/articles/:id", function (req, res) {
+// app.delete("/articles/:id", function (req, res) {
 
-  db.Articles.findByIdAndDelete(req.params.id)
-    .then(function () {
-      res.json({});
-    })
-    .catch(function (err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
+//   db.Articles.findByIdAndDelete(req.params.id)
+//     .then(function () {
+//       res.json({});
+//     })
+//     .catch(function (err) {
+//       // If an error occurred, send it to the client
+//       res.json(err);
+//     });
+// });
 
 
 // Start the server
